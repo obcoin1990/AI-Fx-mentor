@@ -65,36 +65,36 @@ export default function UploadBox({ onUpload }: UploadBoxProps) {
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className={`relative border-2 border-dashed rounded-lg p-12 text-center transition-colors cursor-pointer ${
+        className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all cursor-pointer ${
           isDragActive
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-            : 'border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-400'
+            ? 'border-primary bg-surface-elevated-dark shadow-lg scale-105'
+            : 'border-hairline-dark hover:border-primary bg-surface-card-dark hover:bg-surface-elevated-dark'
         }`}
         onClick={() => fileInputRef.current?.click()}
       >
         {!preview ? (
           <>
-            <div className="text-5xl mb-4">📈</div>
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            <div className="text-6xl mb-lg">📈</div>
+            <h2 className="typo-title-lg text-on-dark mb-md">
               Upload Your Forex Chart
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-4">
+            <p className="typo-body-md text-muted mb-lg">
               Drag and drop your chart image (PNG or JPG), or click to select
             </p>
-            <div className="text-sm text-slate-500 dark:text-slate-500">
-              Minimum 200x200px • Maximum 5MB
+            <div className="text-xs typo-caption text-muted-strong">
+              Minimum 200×200px • Maximum 5MB • PNG, JPG supported
             </div>
           </>
         ) : (
           <>
-            <div className="mb-4">
+            <div className="mb-lg">
               <img
                 src={preview}
                 alt="Preview"
-                className="max-h-64 mx-auto rounded-lg"
+                className="max-h-96 mx-auto rounded-lg border border-hairline-dark"
               />
             </div>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="typo-body-md text-muted">
               Click to select a different chart
             </p>
           </>
@@ -110,15 +110,16 @@ export default function UploadBox({ onUpload }: UploadBoxProps) {
         />
       </div>
 
+      {/* Error Message */}
       {error && (
-        <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 rounded-lg">
-          <p className="text-red-700 dark:text-red-200 text-sm">{error}</p>
+        <div className="mt-lg p-md bg-trading-down bg-opacity-10 border border-trading-down rounded-lg">
+          <p className="typo-body-sm text-trading-down font-medium">{error}</p>
         </div>
       )}
 
-      {/* Mobile camera upload */}
-      <div className="mt-6 text-center">
-        <label className="inline-block cursor-pointer">
+      {/* Mobile Camera Upload */}
+      <div className="mt-xl text-center">
+        <label className="inline-flex items-center gap-xs cursor-pointer group">
           <input
             type="file"
             accept="image/*"
@@ -131,8 +132,8 @@ export default function UploadBox({ onUpload }: UploadBoxProps) {
             className="hidden"
             aria-label="Capture chart with camera"
           />
-          <span className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm">
-            📷 Or take a photo with your camera
+          <span className="typo-nav-link text-muted group-hover:text-primary transition-colors">
+            📷 Take a photo with your camera
           </span>
         </label>
       </div>

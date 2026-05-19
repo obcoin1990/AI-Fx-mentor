@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,14 +13,128 @@
 
 html {
   scroll-behavior: smooth;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @apply bg-canvas-dark text-body;
+}
+
+/* Binance Typography Layers */
+@layer components {
+  .typo-hero-display {
+    @apply text-hero-display font-nova font-bold leading-tight tracking-tighter;
+  }
+  
+  .typo-display-lg {
+    @apply text-display-lg font-nova font-bold leading-tight tracking-tighter;
+  }
+  
+  .typo-display-md {
+    @apply text-display-md font-nova font-semibold leading-tight tracking-tight;
+  }
+  
+  .typo-display-sm {
+    @apply text-display-sm font-nova font-semibold leading-snug;
+  }
+  
+  .typo-title-lg {
+    @apply text-title-lg font-nova font-semibold;
+  }
+  
+  .typo-title-md {
+    @apply text-title-md font-nova font-semibold;
+  }
+  
+  .typo-title-sm {
+    @apply text-title-sm font-nova font-semibold;
+  }
+  
+  .typo-number-display {
+    @apply text-number-display font-plex font-bold;
+  }
+  
+  .typo-number-md {
+    @apply text-number-md font-plex font-medium;
+  }
+  
+  .typo-number-sm {
+    @apply text-number-sm font-plex font-medium;
+  }
+  
+  .typo-body-md {
+    @apply text-body-md font-nova font-normal;
+  }
+  
+  .typo-body-sm {
+    @apply text-body-sm font-nova font-normal;
+  }
+  
+  .typo-caption {
+    @apply text-caption font-nova font-medium;
+  }
+  
+  .typo-button {
+    @apply text-button font-nova font-semibold;
+  }
+  
+  .typo-nav-link {
+    @apply text-nav-link font-nova font-medium;
+  }
+  
+  /* Binance Button Components */
+  .btn-primary {
+    @apply bg-primary text-on-primary px-6 py-3 rounded-md font-semibold text-button hover:bg-primary-active active:bg-primary-active disabled:bg-primary-disabled disabled:text-muted transition-colors;
+  }
+  
+  .btn-primary-pill {
+    @apply bg-primary text-on-primary px-8 py-3.5 rounded-full font-semibold text-button hover:bg-primary-active active:bg-primary-active transition-colors;
+  }
+  
+  .btn-secondary-dark {
+    @apply bg-surface-card-dark text-on-dark px-6 py-3 rounded-md font-semibold text-button hover:bg-surface-elevated-dark transition-colors;
+  }
+  
+  .btn-secondary-light {
+    @apply bg-canvas-light text-ink px-6 py-3 rounded-md font-semibold text-button border border-hairline-light hover:bg-surface-soft-light transition-colors;
+  }
+  
+  .btn-tertiary {
+    @apply bg-transparent text-primary hover:text-primary-active text-button font-semibold transition-colors;
+  }
+  
+  .btn-trading-up {
+    @apply bg-trading-up text-on-dark px-5 py-2 rounded-sm font-semibold text-button hover:opacity-90 transition-opacity;
+  }
+  
+  .btn-trading-down {
+    @apply bg-trading-down text-on-dark px-5 py-2 rounded-sm font-semibold text-button hover:opacity-90 transition-opacity;
+  }
+  
+  /* Card Components */
+  .card-dark {
+    @apply bg-surface-card-dark text-on-dark rounded-lg p-6 border border-hairline-dark;
+  }
+  
+  .card-light {
+    @apply bg-canvas-light text-ink rounded-lg p-6 border border-hairline-light;
+  }
+  
+  .card-elevated {
+    @apply bg-surface-elevated-dark text-on-dark rounded-xl p-6 border border-hairline-dark;
+  }
+  
+  /* Input Components */
+  .input-dark {
+    @apply bg-surface-card-dark text-on-dark rounded-lg px-4 py-2.5 border border-hairline-dark placeholder-muted focus:outline-none focus:ring-2 focus:ring-info focus:ring-opacity-50;
+  }
+  
+  .input-light {
+    @apply bg-canvas-light text-ink rounded-md px-4 py-2.5 border border-hairline-light placeholder-muted focus:outline-none focus:ring-2 focus:ring-info focus:ring-opacity-50;
+  }
 }
 
 /* RTL Support for Arabic */
@@ -30,37 +147,38 @@ html[dir='rtl'] * {
   text-align: inherit;
 }
 
-/* Scrollbar styling */
+/* Binance Dark Mode Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #0B0E11;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #2B3139;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #707A8A;
 }
 
-/* Dark mode scrollbar */
-@media (prefers-color-scheme: dark) {
+/* Light Mode Scrollbar */
+@media (prefers-color-scheme: light) {
   ::-webkit-scrollbar-track {
-    background: #1e293b;
+    background: #FFFFFF;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #475569;
+    background: #EAECEF;
+    border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+    background: #CDD1D6;
   }
 }
 

@@ -39,8 +39,9 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+      className="p-md rounded-lg bg-surface-card-dark hover:bg-surface-elevated-dark text-primary transition-colors hover:shadow-lg"
       aria-label="Toggle theme"
+      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDark ? '☀️' : '🌙'}
     </button>

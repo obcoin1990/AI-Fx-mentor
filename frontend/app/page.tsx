@@ -67,74 +67,127 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="min-h-screen bg-canvas-dark text-body">
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
-        <Disclaimers />
+      <div className="w-full max-w-7xl mx-auto px-lg py-section">
+        {/* Initial Disclaimers */}
+        {!results && !loading && <Disclaimers />}
 
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
+          {/* Upload Section */}
           {!results && !loading && (
-            <UploadBox onUpload={handleImageUpload} />
+            <div className="animate-fade-in">
+              <UploadBox onUpload={handleImageUpload} />
+            </div>
           )}
 
+          {/* Loading State */}
           {loading && (
-            <div className="space-y-4">
-              <div className="flex justify-center items-center py-16">
-                <div className="text-center">
-                  <div className="inline-block animate-spin mb-4">
-                    <div className="h-12 w-12 rounded-full border-4 border-slate-300 dark:border-slate-600 border-t-blue-500"></div>
+            <div className="animate-fade-in">
+              <div className="card-elevated p-section text-center">
+                <div className="inline-flex items-center justify-center mb-lg">
+                  <div className="relative w-16 h-16">
+                    <div className="absolute inset-0 rounded-full border-4 border-hairline-dark animate-spin border-t-primary" />
+                    <div className="absolute inset-0 flex items-center justify-center text-2xl">
+                      📊
+                    </div>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-400 font-medium mb-3">
-                    Analyzing your chart...
-                  </p>
-                  {uploadProgress > 0 && uploadProgress < 100 && (
-                    <div className="w-48 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mx-auto">
+                </div>
+
+                <h3 className="typo-title-lg text-on-dark font-bold mb-md">
+                  Analyzing Your Chart
+                </h3>
+                <p className="typo-body-md text-muted mb-lg">
+                  Our AI is extracting trends, support/resistance zones, and generating trade scenarios...
+                </p>
+
+                {/* Progress Bar */}
+                {uploadProgress > 0 && uploadProgress < 100 && (
+                  <div className="mb-lg">
+                    <div className="w-full h-2 bg-surface-card-dark rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-500 transition-all"
+                        className="h-full bg-primary transition-all duration-300"
                         style={{ width: `${uploadProgress}%` }}
                       />
                     </div>
-                  )}
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-                    Step 1: Extracting chart features...
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Step 2: Generating trade scenarios...
-                  </p>
+                    <p className="typo-caption text-muted mt-md">
+                      {uploadProgress}% Complete
+                    </p>
+                  </div>
+                )}
+
+                {/* Steps */}
+                <div className="space-y-md pt-lg border-t border-hairline-dark">
+                  <div className="flex items-center gap-md">
+                    <div className="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center typo-caption font-bold">
+                      ✓
+                    </div>
+                    <p className="typo-body-sm text-muted">Vision API: Extracting chart features</p>
+                  </div>
+                  <div className="flex items-center gap-md">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center typo-caption font-bold ${
+                      uploadProgress > 50 
+                        ? 'bg-primary text-on-primary' 
+                        : 'bg-surface-card-dark text-muted animate-pulse'
+                    }`}>
+                      {uploadProgress > 50 ? '✓' : '2'}
+                    </div>
+                    <p className="typo-body-sm text-muted">Reasoning API: Generating scenarios</p>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
+          {/* Error State */}
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 rounded-lg p-4 mb-4">
-              <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">
-                ⚠️ Analysis Failed
-              </h3>
-              <p className="text-red-700 dark:text-red-200 mb-3">{error}</p>
-              <button
-                onClick={handleReset}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium"
-              >
-                Try Again
-              </button>
+            <div className="card-dark p-lg border-2 border-trading-down bg-trading-down bg-opacity-5 animate-fade-in">
+              <div className="flex items-start gap-lg mb-lg">
+                <div className="text-3xl flex-shrink-0">⚠️</div>
+                <div className="flex-1">
+                  <h3 className="typo-title-lg text-trading-down font-bold mb-md">
+                    Analysis Failed
+                  </h3>
+                  <p className="typo-body-md text-body mb-lg">
+                    {error}
+                  </p>
+                  <button
+                    onClick={handleReset}
+                    className="btn-primary"
+                  >
+                    Try Another Chart
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
+          {/* Results Section */}
           {results && !loading && (
-            <>
+            <div className="animate-fade-in space-y-section">
               <ResultDisplay results={results} />
+
+              {/* Action Button */}
               <button
                 onClick={handleReset}
-                className="mt-8 w-full px-4 py-3 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 font-medium transition-colors"
+                className="w-full btn-secondary-dark py-lg typo-button font-bold text-on-dark text-lg"
               >
-                Analyze Another Chart
+                ↻ Analyze Another Chart
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-surface-card-dark border-t border-hairline-dark mt-section">
+        <div className="w-full max-w-7xl mx-auto px-lg py-lg">
+          <p className="typo-body-sm text-muted text-center">
+            AI Chart Mentor © 2025 • Educational Analysis Only • Not Financial Advice
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

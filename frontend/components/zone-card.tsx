@@ -14,57 +14,75 @@ interface ZoneCardProps {
 }
 
 export default function ZoneCard({ zone }: ZoneCardProps) {
-  const getZoneColor = (type: string) => {
-    return type === 'support'
-      ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-      : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-  }
+  const isSupport = zone.zone_type === 'support'
+  const zoneColor = isSupport ? 'trading-up' : 'trading-down'
+  const zoneLabel = isSupport ? 'Support' : 'Resistance'
 
-  const getZoneLabel = (type: string) => {
-    return type === 'support' ? 'Support' : 'Resistance'
-  }
-
-  const getStrengthColor = (strength?: string) => {
+  const getStrengthConfig = (strength?: string) => {
     switch (strength) {
       case 'weak':
-        return 'text-yellow-600 dark:text-yellow-400'
+        return { label: 'Weak', indicator: '●', color: 'text-muted' }
       case 'moderate':
-        return 'text-orange-600 dark:text-orange-400'
+        return { label: 'Moderate', indicator: '●●', color: 'text-primary' }
       case 'strong':
-        return 'text-green-600 dark:text-green-400'
+        return { label: 'Strong', indicator: '●●●', color: `text-${zoneColor}` }
       default:
-        return 'text-slate-600 dark:text-slate-400'
+        return { label: 'Moderate', indicator: '●●', color: 'text-primary' }
     }
   }
 
-  const getStrengthLabel = (strength?: string) => {
-    return strength ? strength.charAt(0).toUpperCase() + strength.slice(1) : 'Moderate'
-  }
+  const strength = getStrengthConfig(zone.strength)
 
   return (
-    <div className={`rounded-lg border p-4 ${getZoneColor(zone.zone_type)}`}>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold text-slate-900 dark:text-white">
-          {getZoneLabel(zone.zone_type)}
-        </h3>
-        <span className={`text-xs font-medium ${getStrengthColor(zone.strength)}`}>
-          {getStrengthLabel(zone.strength)}
-        </span>
+    <div className={`card-dark p-lg border-2 border-${zoneColor} border-opacity-30`}>
+      {/* Header: Label & Strength */}
+      <div className="flex items-center justify-between mb-lg">
+        <div className="flex items-center gap-md">
+          <div className={`w-3 h-3 rounded-full bg-${zoneColor}`} />
+          <h3 className="typo-title-md text-on-dark font-bold">
+            {zoneLabel}
+          </h3>
+        </div>
+        <div className="flex items-center gap-xs">
+          <span className={strength.color}>{strength.indicator}</span>
+          <span className="typo-caption text-muted-strong">
+            {strength.label}
+          </span>
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-slate-600 dark:text-slate-400">Price Level</span>
-          <span className="font-mono font-bold text-slate-900 dark:text-white">
+      {/* Zone Details */}
+      <div className="space-y-md">
+        {/* Price Level */}
+        <div className="flex items-center justify-between pb-md border-b border-hairline-dark">
+          <span className="typo-body-sm text-muted">Price Level</span>
+          <span className="typo-number-md text-on-dark font-bold font-plex">
             {zone.price_level.toFixed(4)}
           </span>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-slate-600 dark:text-slate-400">Touches</span>
-          <span className="font-semibold text-slate-900 dark:text-white">
-            {zone.touch_count}
-          </span>
+
+        {/* Touch Count */}
+        <div className="flex items-center justify-between">
+          <span className="typo-body-sm text-muted">Touched {zone.touch_count}x</span>
+          <div className="flex gap-xs">
+            {Array.from({ length: Math.min(zone.touch_count, 5) }).map((_, i) => (
+              <div
+                key={i}
+                className={`w-2 h-2 rounded-full bg-${zoneColor}`}
+              />
+            ))}
+            {zone.touch_count > 5 && (
+              <span className="typo-caption text-muted">+{zone.touch_count - 5}</span>
+            )}
+          </div>
         </div>
+      </div>
+
+      {/* Confidence Note */}
+      <div className="mt-lg pt-md border-t border-hairline-dark">
+        <p className="typo-caption text-muted">
+          {isSupport ? '↑' : '↓'} Zone identified from {zone.touch_count} price touches
+        </p>
       </div>
     </div>
   )
