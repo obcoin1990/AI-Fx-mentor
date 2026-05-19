@@ -1,0 +1,47 @@
+{
+  "common": {
+    "appName": "AI Chart Mentor",
+    "appDescription": "Instant forex chart analysis powered by AI"
+  },
+  "upload": {
+    "title": "Upload Your Forex Chart",
+    "description": "Drag and drop your chart image (PNG or JPG), or click to select",
+    "sizeHint": "Minimum 200x200px • Maximum 5MB",
+    "cameraLabel": "Or take a photo with your camera",
+    "selectAnother": "Click to select a different chart"
+  },
+  "validation": {
+    "invalidType": "Only PNG and JPG images are allowed",
+    "fileTooLarge": "Image is too large. Maximum size is 5MB",
+    "imageTooSmall": "Image is too small. Minimum size is 200x200px",
+    "invalidImage": "Could not read image. Please try a different file",
+    "couldNotRead": "Could not read file"
+  },
+  "analysis": {
+    "analyzing": "Analyzing chart...",
+    "results": "Analysis Results",
+    "trend": "Trend",
+    "zones": "Support & Resistance Zones",
+    "scenario": "Trade Scenario",
+    "explanation": "Mentor Explanation",
+    "analyzeAnother": "Analyze Another Chart",
+    "tryAgain": "Try Again"
+  },
+  "disclaimers": {
+    "title": "Important Disclaimers",
+    "educationalOnly": "Educational Analysis Only: This tool provides educational analysis of forex charts. It is NOT financial advice.",
+    "notSolely": "Do Not Trade Based Solely on This Tool: Always conduct your own research before making trading decisions.",
+    "noGuarantees": "No Guarantees: Past patterns do not guarantee future results. Trading forex carries substantial risk of loss.",
+    "confidenceLimit": "Confidence Limits: Analysis confidence scores are capped at 65% to prevent overconfidence.",
+    "volatility": "Unstable Markets: Analysis may fail in highly volatile or gap-prone markets.",
+    "accept": "I acknowledge and accept the disclaimers above",
+    "accepted": "You can now analyze charts. Remember: trade responsibly!"
+  },
+  "errors": {
+    "serverError": "Server error",
+    "connectionError": "Failed to connect to analysis server",
+    "timeoutError": "Analysis request timed out. Please try again.",
+    "invalidResponse": "Invalid response from server",
+    "tooManyRequests": "Too many requests. Please wait a moment and try again."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "common": {
+    "appName": "AI 图表导师",
+    "appDescription": "由人工智能提供支持的即时外汇图表分析"
+  },
+  "upload": {
+    "title": "上传您的外汇图表",
+    "description": "拖放您的图表图像（PNG 或 JPG），或点击选择",
+    "sizeHint": "最小 200x200 像素 • 最大 5MB",
+    "cameraLabel": "或用相机拍照",
+    "selectAnother": "点击选择其他图表"
+  },
+  "validation": {
+    "invalidType": "仅允许 PNG 和 JPG 图像",
+    "fileTooLarge": "图像过大。最大大小为 5MB",
+    "imageTooSmall": "图像太小。最小大小为 200x200 像素",
+    "invalidImage": "无法读取图像。请尝试其他文件",
+    "couldNotRead": "无法读取文件"
+  },
+  "analysis": {
+    "analyzing": "分析图表中...",
+    "results": "分析结果",
+    "trend": "趋势",
+    "zones": "支撑位和阻力位",
+    "scenario": "交易情景",
+    "explanation": "导师解释",
+    "analyzeAnother": "分析另一个图表",
+    "tryAgain": "重试"
+  },
+  "disclaimers": {
+    "title": "重要免责声明",
+    "educationalOnly": "仅供教育用途：本工具提供外汇图表的教育分析。它不是财务建议。",
+    "notSolely": "不要仅基于此工具进行交易：在做交易决定之前，请始终进行自己的研究。",
+    "noGuarantees": "不提供保证：过去的模式不能保证未来的结果。外汇交易存在重大亏损风险。",
+    "confidenceLimit": "置信度限制：分析置信度分数的上限为 65% 以防止过度自信。",
+    "volatility": "不稳定的市场：分析可能在高波动或缺口市场中失败。",
+    "accept": "我承认并接受上述免责声明",
+    "accepted": "您现在可以分析图表。记住：负责任地交易！"
+  },
+  "errors": {
+    "serverError": "服务器错误",
+    "connectionError": "无法连接到分析服务器",
+    "timeoutError": "分析请求超时。请重试。",
+    "invalidResponse": "来自服务器的响应无效",
+    "tooManyRequests": "请求过多。请稍候后再试。"
+  }
+}
