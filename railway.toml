@@ -1,0 +1,17 @@
+[build]
+builder = "dockerfile"
+dockerfile = "./Dockerfile"
+
+[deploy]
+startCommand = "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+
+[[services]]
+name = "backend"
+dockerfilePath = "./Dockerfile"
+rootDirectory = "."
+
+[[services.variables]]
+name = "PYTHONUNBUFFERED"
+value = "1"

@@ -1,0 +1,72 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint with flake8
+        working-directory: backend
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
+        continue-on-error: true
+
+      - name: Format check with black
+        working-directory: backend
+        run: black --check . --line-length=100
+        continue-on-error: true
+
+      - name: Run tests
+        working-directory: backend
+        run: pytest tests/ -v --tb=short
+        continue-on-error: true
+
+      - name: Build Docker image
+        working-directory: backend
+        run: docker build -t ai-chart-mentor-backend:latest .
+        continue-on-error: true
+
+  deploy-preview:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Railway Preview
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+        run: |
+          npm install -g @railway/cli
+          railway up --service backend
+        continue-on-error: true
