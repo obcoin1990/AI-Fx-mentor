@@ -8,7 +8,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "jest",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -16,23 +15,17 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwindcss": "3.4.0",
-    "autoprefixer": "latest",
-    "postcss": "latest",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.38",
     "zustand": "5.0.0",
-    "next-themes": "latest",
-    "next-intl": "^3.0.0"
+    "next-themes": "0.2.1"
   },
   "devDependencies": {
-    "typescript": "latest",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "@typescript-eslint/eslint-plugin": "latest",
-    "@typescript-eslint/parser": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
-    "jest": "latest",
-    "@testing-library/react": "latest",
-    "@testing-library/jest-dom": "latest"
+    "typescript": "5.3.3",
+    "@types/node": "20.10.6",
+    "@types/react": "18.2.46",
+    "@types/react-dom": "18.2.18",
+    "eslint": "8.56.0",
+    "eslint-config-next": "16.2.6"
   }
 }
