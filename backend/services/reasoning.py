@@ -4,7 +4,10 @@ Reasoning service - Generates trade scenarios from Vision analysis
 
 import logging
 import json
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
+from anthropic import Anthropic
+from ..utils.prompts import get_reasoning_prompt
+from ..utils.validation import validate_confidence_score, validate_mentor_explanation, validate_trade_scenario
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +27,9 @@ class ReasoningService:
 
     def __init__(self, api_key: str):
         self.api_key = api_key
-        # TODO: Initialize Anthropic client
-        # from anthropic import Anthropic
-        # self.client = Anthropic(api_key=api_key)
+        self.client = Anthropic(api_key=api_key)
 
-    async def generate_scenarios(self, vision_data: dict) -> dict:
+    async def generate_scenarios(self, vision_data: dict) -> Dict[str, Any]:
         """
         Generate trade scenarios from vision analysis.
         
@@ -50,32 +51,108 @@ class ReasoningService:
                 "mentor_explanation": "3-5 sentence explanation",
                 "overall_confidence": float (0-65)
             }
+        
+        Raises:
+            ValueError: If reasoning fails or validation fails
         """
-        # TODO: Implement reasoning logic
-        # 1. Parse vision_data (trend, zones, patterns)
-        # 2. Create reasoning prompt in prompts.py
-        # 3. Call anthropic.messages.create() with vision output
-        # 4. Extract scenarios and explanation
-        # 5. Cap confidence at 65% in code (ensure no hallucination)
-        # 6. Validate scenarios (entry < SL for bearish, entry > SL for bullish)
-        # 7. Return structured scenarios
+        try:
+            # Get reasoning prompt with vision data
+            vision_json = json.dumps(vision_data, indent=2)
+            reasoning_prompt = get_reasoning_prompt(vision_json)
+            
+            # Call Claude Reasoning API
+            message = self.client.messages.create(
+                model="claude-3-5-sonnet-20241022",
+                max_tokens=1500,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": reasoning_prompt
+                    }
+                ],
+            )
+            
+            # Extract response
+            response_text = message.content[0].text
+            
+            # Parse JSON
+            reasoning_data = self._parse_reasoning_response(response_text)
+            
+            # Validate and process scenarios
+            scenarios = reasoning_data.get("scenarios", [])
+            if not scenarios:
+                raise ValueError("No scenarios generated")
+            
+            # Process each scenario
+            processed_scenarios = []
+            for scenario in scenarios[:2]:  # Limit to 2 scenarios
+                # Validate scenario
+                is_valid, error_msg = validate_trade_scenario(scenario)
+                if not is_valid:
+                    logger.warning(f"Invalid scenario: {error_msg}")
+                    continue
+                
+                # Cap confidence
+                scenario["confidence_score"] = validate_confidence_score(
+                    scenario.get("confidence_score", 0)
+                )
+                
+                # Calculate R:R if not present
+                if "risk_reward_ratio" not in scenario or scenario["risk_reward_ratio"] == 0:
+                    scenario["risk_reward_ratio"] = self.calculate_risk_reward(
+                        scenario.get("entry_price", 0),
+                        scenario.get("stop_loss", 0),
+                        scenario.get("take_profit", 0)
+                    )
+                
+                processed_scenarios.append(scenario)
+            
+            if not processed_scenarios:
+                raise ValueError("All scenarios failed validation")
+            
+            # Validate and process explanation
+            explanation = reasoning_data.get("mentor_explanation", "")
+            is_valid, error_msg = validate_mentor_explanation(explanation)
+            if not is_valid:
+                logger.warning(f"Mentor explanation validation: {error_msg}")
+                # Continue anyway, but log warning
+            
+            # Calculate overall confidence
+            confidences = [s.get("confidence_score", 0) for s in processed_scenarios]
+            overall_confidence = validate_confidence_score(sum(confidences) / len(confidences))
+            
+            logger.info(f"Reasoning completed: {len(processed_scenarios)} scenarios generated")
+            
+            return {
+                "scenarios": processed_scenarios,
+                "mentor_explanation": explanation,
+                "overall_confidence": overall_confidence
+            }
         
-        logger.info("Reasoning placeholder - TODO: Implement Claude Reasoning integration")
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse reasoning response JSON: {e}")
+            raise ValueError(f"Invalid JSON in reasoning response: {str(e)}")
+        except Exception as e:
+            logger.error(f"Reasoning API error: {str(e)}")
+            raise ValueError(f"Reasoning API call failed: {str(e)}")
+
+    def _parse_reasoning_response(self, response_text: str) -> Dict[str, Any]:
+        """
+        Parse Claude's JSON response into structured data.
+        Handles cases where JSON is wrapped in markdown code blocks.
+        """
+        # Try to extract JSON if wrapped in markdown code blocks
+        if "```json" in response_text:
+            start = response_text.find("```json") + 7
+            end = response_text.find("```", start)
+            response_text = response_text[start:end].strip()
+        elif "```" in response_text:
+            start = response_text.find("```") + 3
+            end = response_text.find("```", start)
+            response_text = response_text[start:end].strip()
         
-        return {
-            "scenarios": [
-                {
-                    "direction": "bullish",
-                    "entry_price": 1.0800,
-                    "stop_loss": 1.0750,
-                    "take_profit": 1.0900,
-                    "risk_reward_ratio": 2.0,
-                    "confidence_score": 45.0  # Capped at 65%
-                }
-            ],
-            "mentor_explanation": "This is a placeholder explanation. Implement Claude Reasoning integration to generate mentor-style guidance.",
-            "overall_confidence": 45.0
-        }
+        # Parse JSON
+        return json.loads(response_text)
 
     def calculate_risk_reward(self, entry: float, sl: float, tp: float) -> float:
         """Calculate risk-reward ratio from entry, stop-loss, and take-profit."""
@@ -97,8 +174,8 @@ class ReasoningService:
         """
         Validate that a scenario makes logical sense.
         
-        For bullish: entry < TP and entry > SL
-        For bearish: entry > TP and entry < SL
+        For bullish: entry > SL and entry < TP
+        For bearish: entry < SL and entry > TP
         """
         entry = scenario.get("entry_price")
         sl = scenario.get("stop_loss")

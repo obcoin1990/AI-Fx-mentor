@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
 from dotenv import load_dotenv
+from .routes import analyze, reason
 
 # Load environment variables
 load_dotenv()
@@ -29,6 +30,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Register routers
+app.include_router(analyze.router)
+app.include_router(reason.router)
+
 # Health check endpoint
 @app.get("/health", tags=["Health"])
 async def health_check():
@@ -49,6 +54,8 @@ async def root():
         "description": "AI-powered forex chart analysis platform",
         "endpoints": {
             "health": "/health",
+            "analyze": "/api/analyze-chart",
+            "reason": "/api/reason",
             "docs": "/docs",
             "redoc": "/redoc",
         },
