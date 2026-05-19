@@ -1,8 +1,7 @@
 /**
- * API client for backend communication
+ * API client for backend communication via Vercel serverless functions
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 const REQUEST_TIMEOUT = 30000 // 30 seconds for analysis
 
 export interface VisionAnalysisResult {
@@ -67,7 +66,7 @@ export async function uploadChart(
   onProgress?: (percent: number) => void
 ): Promise<VisionAnalysisResult> {
   const formData = new FormData()
-  formData.append('file', file)
+  formData.append('image', file)
   if (pair) formData.append('pair', pair)
   if (timeframe) formData.append('timeframe', timeframe)
 
@@ -102,7 +101,7 @@ export async function uploadChart(
       } else if (xhr.status === 400) {
         try {
           const errorData = JSON.parse(xhr.responseText)
-          reject(new Error(errorData.detail || 'Invalid chart image. Please try another.'))
+          reject(new Error(errorData.error || 'Invalid chart image. Please try another.'))
         } catch {
           reject(new Error('Invalid chart image. Please try another.'))
         }
@@ -126,8 +125,8 @@ export async function uploadChart(
       reject(new Error('Request cancelled'))
     })
 
-    // Send request
-    xhr.open('POST', `${API_URL}/api/analyze-chart`)
+    // Send request to Vercel API route
+    xhr.open('POST', '/api/analyze-chart')
     xhr.send(formData)
   })
 }
@@ -141,13 +140,13 @@ export async function generateScenarios(
   timeframe?: string
 ): Promise<ReasoningResult> {
   try {
-    const response = await fetch(`${API_URL}/api/reason`, {
+    const response = await fetch('/api/reason', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        vision_data: {
+        analysis: {
           trend: visionData.trend,
           trend_confidence: visionData.trend_confidence,
           support_zones: visionData.support_zones,
@@ -166,7 +165,7 @@ export async function generateScenarios(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
       throw new Error(
-        errorData.detail || `Reasoning service error: ${response.status}`
+        errorData.error || `Reasoning service error: ${response.status}`
       )
     }
 
@@ -181,15 +180,15 @@ export async function generateScenarios(
 }
 
 /**
- * Get server health status
+ * Check if API is available
  */
-export async function getServerHealth(): Promise<boolean> {
+export async function isApiAvailable(): Promise<boolean> {
   try {
-    const response = await fetch(`${API_URL}/health`, {
-      method: 'GET',
+    const response = await fetch('/api/analyze-chart', {
+      method: 'HEAD',
       signal: AbortSignal.timeout(5000),
     })
-    return response.ok
+    return response.ok || response.status === 405 // 405 = Method Not Allowed (but endpoint exists)
   } catch {
     return false
   }

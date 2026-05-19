@@ -18,7 +18,9 @@
     "autoprefixer": "10.4.20",
     "postcss": "8.4.38",
     "zustand": "4.5.5",
-    "next-themes": "0.2.1"
+    "next-themes": "0.2.1",
+    "@supabase/supabase-js": "^2.38.4",
+    "@anthropic-ai/sdk": "^0.16.0"
   },
   "devDependencies": {
     "typescript": "5.3.3",
