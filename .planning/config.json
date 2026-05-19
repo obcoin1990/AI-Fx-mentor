@@ -1,0 +1,19 @@
+{
+  "mode": "yolo",
+  "granularity": "fine",
+  "parallelization": true,
+  "commit_docs": true,
+  "model_profile": "balanced",
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true,
+    "nyquist_validation": true,
+    "auto_advance": true
+  },
+  "project": {
+    "name": "AI Chart Mentor",
+    "code": "ACM",
+    "description": "AI-powered forex chart analysis platform with mentor-style guidance"
+  }
+}
