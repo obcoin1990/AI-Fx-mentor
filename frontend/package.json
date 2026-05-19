@@ -20,7 +20,7 @@
     "postcss": "latest",
     "zustand": "5.0.0",
     "next-themes": "latest",
-    "next-i18n-routing": "latest"
+    "next-intl": "^3.0.0"
   },
   "devDependencies": {
     "typescript": "latest",
