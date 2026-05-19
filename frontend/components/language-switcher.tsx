@@ -23,7 +23,7 @@ export default function LanguageSwitcher() {
     const langConfig = LANGUAGES[lang as keyof typeof LANGUAGES]
     if (langConfig) {
       document.documentElement.lang = lang
-      document.documentElement.dir = langConfig.dir || 'ltr'
+      document.documentElement.dir = (langConfig as any).dir || 'ltr'
       localStorage.setItem('language', lang)
     }
   }
